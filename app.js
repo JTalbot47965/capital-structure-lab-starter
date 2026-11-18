@@ -403,5 +403,13 @@
     updateCdss();
   }
 
+  // Register the service worker (sw.js) so the app works offline. A failure here
+  // (for example when the page is opened from a file) just means no offline mode.
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
+
   loadData().then(start).catch(showError);
 })();
