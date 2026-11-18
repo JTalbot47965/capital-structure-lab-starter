@@ -1,0 +1,167 @@
+/* AGE Capital Structure app. System fonts only: nothing is loaded from other sites. */
+
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --text: #1c2430;
+  --muted: #5b6676;
+  --line: #d9dee6;
+  --accent: #1d4f91;
+  --accent-soft: #e6eef9;
+  --warn-bg: #fff4d6;
+  --warn-line: #e0b93a;
+  --good: #1b6b3a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12161c;
+    --card: #1b212a;
+    --text: #e8ecf2;
+    --muted: #9aa5b5;
+    --line: #2f3946;
+    --accent: #7fb0f0;
+    --accent-soft: #223045;
+    --warn-bg: #3a3014;
+    --warn-line: #a88a2a;
+    --good: #66c28a;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  overflow-x: hidden;
+}
+
+.site-header {
+  background: var(--accent);
+  color: #fff;
+  padding: 16px;
+}
+.site-header h1 { margin: 0; font-size: 1.3rem; }
+.site-header .sub { margin: 2px 0 0; opacity: 0.9; font-size: 0.9rem; }
+
+main { max-width: 960px; margin: 0 auto; padding: 12px; }
+
+section {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  margin: 0 0 14px;
+}
+
+h2 { margin: 0 0 6px; font-size: 1.15rem; }
+h3 { margin: 16px 0 6px; font-size: 1rem; }
+p { margin: 6px 0; }
+.note { color: var(--muted); font-size: 0.9rem; }
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.warning {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 8px 0;
+}
+
+.ok-line { color: var(--good); font-size: 0.9rem; }
+
+.formula {
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 8px 0;
+  font-size: 0.92rem;
+}
+.formula div + div { margin-top: 2px; }
+
+/* ---------- Tables ---------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+th, td {
+  padding: 5px 6px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  vertical-align: baseline;
+}
+th:first-child, td:first-child { text-align: left; }
+thead th {
+  background: var(--accent-soft);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+tbody th { font-weight: 500; }
+tr.group-start td, tr.group-start th { border-top: 2px solid var(--line); }
+tr.highlight td, tr.highlight th { font-weight: 600; }
+
+/* Firm tables: a label column and one column per scenario. */
+.firm-table th:first-child, .firm-table td:first-child { width: 34%; }
+
+/* The side-by-side summary of Firm U and Firm L. */
+.summary-table td { width: 33%; }
+
+/* ---------- CDSS tables ---------- */
+
+.cdss-table td:first-child { font-weight: 600; }
+
+/* Phone: turn each row of a CDSS table into a card, so nothing scrolls sideways. */
+@media (max-width: 640px) {
+  .cards thead { display: none; }
+  .cards, .cards tbody, .cards tr, .cards td { display: block; width: 100%; }
+  .cards tr {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin: 0 0 10px;
+    padding: 4px 8px;
+  }
+  .cards td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px dashed var(--line);
+    padding: 4px 0;
+    text-align: right;
+  }
+  .cards td:last-child { border-bottom: 0; }
+  .cards td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    text-align: left;
+    flex: 0 1 auto;
+  }
+  .cards td:first-child {
+    font-size: 1rem;
+    background: var(--accent-soft);
+    margin: 0 -8px 2px;
+    padding: 5px 8px;
+    border-radius: 7px 7px 0 0;
+  }
+  .cards td:first-child::before { color: var(--text); }
+}
+
+.site-footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 4px 12px 24px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
