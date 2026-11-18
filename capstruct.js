@@ -272,6 +272,25 @@
     return Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
   }
 
+  // Management's stake after the buyback. Management does not sell, so its
+  // stake = management's share x n / shares remaining.
+  //   status 'ok'        : stake is a normal percentage
+  //   status 'allBought' : the buyback takes every outside share, so management
+  //                        owns 100% and no outside shareholders are left
+  //   status 'tooMany'   : more shares would be bought than outsiders own, so
+  //                        management would have to sell (there is no stake)
+  function managementStake(cdss, repurchased, remaining) {
+    var n = cdss.sharesOutstanding;
+    var outsiders = (1 - cdss.managementShare) * n;
+    if (close(repurchased, outsiders)) {
+      return { status: 'allBought', stake: 1 };
+    }
+    if (repurchased > outsiders || !(remaining > 0)) {
+      return { status: 'tooMany', stake: null };
+    }
+    return { status: 'ok', stake: (cdss.managementShare * n) / remaining };
+  }
+
   // One row of the banker's schedule, worked out both ways.
   function cdssAtDebt(cdss, taxRate, scheduleRow) {
     var T = taxRate;
@@ -317,8 +336,10 @@
         repurchased: cRepurchased,
         remaining: cRemaining,
         eps: cEps,
+        dps: cEps, // CDSS pays out all earnings, so dividends per share = EPS
         price: cPrice,
-        wacc: cWacc
+        wacc: cWacc,
+        management: managementStake(cdss, cRepurchased, cRemaining)
       },
       newPrice: {
         equityValue: S,
@@ -326,8 +347,10 @@
         repurchased: nRepurchased,
         remaining: nRemaining,
         eps: nEps,
+        dps: nEps,
         price: nPrice,
         wacc: nWacc,
+        management: managementStake(cdss, nRepurchased, nRemaining),
         // Checks: EPS must equal r_s x P, and market-weight WACC must equal
         // EBIT x (1 - T) / V.
         epsCheck: nOk ? close(nEps, rs * nPrice) : false,
@@ -373,6 +396,28 @@
     return out;
   }
 
+  // Where the Best price (kind 'price') and Highest EPS (kind 'eps') buttons send
+  // the CDSS debt slider. If both buyback methods pick the same amount, go there.
+  // If they pick different amounts, go to the case method's amount and return a
+  // note that names both. On an exact tie the smaller amount of debt wins (see
+  // pickIndex). Returns { index, note } where note is '' when the methods agree.
+  function buttonTarget(rows, kind) {
+    var best = cdssBest(rows);
+    var caseIdx = kind === 'eps' ? best.caseEps : best.casePrice;
+    var newIdx = kind === 'eps' ? best.newEps : best.newPrice;
+    var what = kind === 'eps' ? 'EPS' : 'share price';
+    if (caseIdx === -1 && newIdx === -1) return { index: -1, note: '' };
+    if (caseIdx === newIdx) return { index: caseIdx, note: '' };
+    var caseText = caseIdx === -1 ? 'none' : dollars(rows[caseIdx].debt);
+    var newText = newIdx === -1 ? 'none' : dollars(rows[newIdx].debt);
+    return {
+      index: caseIdx === -1 ? newIdx : caseIdx,
+      note: 'The two buyback methods disagree on the highest ' + what + ': ' + caseText +
+        ' of debt with the case’s $20 buyback, ' + newText + ' with the new price. ' +
+        'The slider is at the case method’s amount.'
+    };
+  }
+
   // EPS / r_s at $0 of debt must equal today's share price from cdss.csv. If it
   // does not (for example with a schedule the student loads), the page warns.
   function baselineCheck(cdss, rows) {
@@ -414,6 +459,8 @@
     cdssAtDebt: cdssAtDebt,
     cdssTable: cdssTable,
     cdssBest: cdssBest,
+    buttonTarget: buttonTarget,
+    managementStake: managementStake,
     baselineCheck: baselineCheck
   };
 
