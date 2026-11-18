@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AGE Capital Structure Lab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <h1>AGE Capital Structure Lab</h1>
+    <p class="sub">FIN 4150 · Campus Deli and Sub Shop (CDSS)</p>
+  </header>
+
+  <main>
+    <p id="status" role="status">Loading the data files…</p>
+
+    <section id="firms" hidden>
+      <h2>Question c: Firm U and Firm L</h2>
+      <p class="note">Both firms have the same assets, tax rate and EBIT outlook. Firm U has no debt. Firm L is financed partly with debt.</p>
+      <div class="firm-grid">
+        <div id="firm-u"></div>
+        <div id="firm-l"></div>
+      </div>
+      <p class="note" id="firm-note"></p>
+    </section>
+
+    <section id="cdss" hidden>
+      <h2>CDSS at each amount of borrowing</h2>
+      <dl id="cdss-facts" class="facts"></dl>
+      <div id="cdss-warnings"></div>
+
+      <h3>Case method: buy back shares at today's price</h3>
+      <p class="note">Question d(3) and d(4). Shares are repurchased at the current price, and WACC uses book-value weights.</p>
+      <div id="table-case"></div>
+
+      <h3>New-price method: buy back at the price after the announcement</h3>
+      <p class="note">Shares are repurchased at the new price, and WACC uses market-value weights.</p>
+      <div id="table-new"></div>
+
+      <h3>Which amount of debt wins?</h3>
+      <div id="cdss-summary"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Everything on this page is calculated in your browser from the files in the <code>data/</code> folder. Nothing is sent anywhere.</p>
+  </footer>
+
+  <script src="capstruct.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
